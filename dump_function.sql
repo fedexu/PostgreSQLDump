@@ -10,7 +10,6 @@ CREATE OR REPLACE FUNCTION dump(IN p_schema text, IN p_table text, IN p_where te
      colrec record;
  BEGIN
 
-
      dumpquery_0 := 'INSERT INTO ' ||  quote_ident(p_schema) || '.' || quote_ident(p_table) || '(';
      selquery    := 'SELECT array[';
 
@@ -29,8 +28,8 @@ CREATE OR REPLACE FUNCTION dump(IN p_schema text, IN p_table text, IN p_where te
      selquery    := substring(selquery    ,1,length(selquery)-1)    || '] AS MYARRAY';
      selquery    := selquery    || ' FROM ' ||quote_ident(p_schema)||'.'||quote_ident(p_table);
      selquery    := selquery    || ' WHERE '||p_where;
-   
-	 execute SELECT built and loop on each row
+
+     --   execute SELECT built and loop on each row
      <<label1>>
      FOR valrec IN  EXECUTE  selquery
      LOOP
@@ -50,12 +49,11 @@ CREATE OR REPLACE FUNCTION dump(IN p_schema text, IN p_table text, IN p_where te
              dumpquery_1 := dumpquery_1 || selvalue || ',';
          END LOOP label2;
          dumpquery_1 := substring(dumpquery_1 ,1,length(dumpquery_1)-1) || ');';
-         
+
          RETURN NEXT dumpquery_0 || dumpquery_1;
 
      END LOOP label1 ;
      -- SELECT LOOP --
-
  RETURN ;
  END
  $BODY$
